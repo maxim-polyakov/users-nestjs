@@ -6,12 +6,14 @@ import {
   ValidationException,
   ValidationFilter,
 } from './util/filter.validation';
+import cors from 'cors';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('/api');
 
   app.useGlobalFilters(new ValidationFilter());
+  app.enableCors();
   app.useGlobalPipes(
     new ValidationPipe({
       skipMissingProperties: false,

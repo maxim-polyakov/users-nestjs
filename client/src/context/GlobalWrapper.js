@@ -1,5 +1,6 @@
 import { createContext, useState } from 'react';
 import axios from 'axios';
+import {FetchUsers, Add, FindOne, Update, Search, Delete} from "../http/users/Users_API";
 import { useDisclosure, useToast } from '@chakra-ui/react';
 export const GlobalContext = createContext();
 
@@ -9,104 +10,95 @@ export default function Wrapper({ children }) {
   const [errors, setErrors] = useState({});
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
-  const FetchUsers = () => {
-    axios
-      .get('/api/users')
-      .then((res) => {
-        setUsers(res.data);
-      })
-      .catch((err) => {
-        console.log(err.reponse.data);
-      });
+  const fetchUsers = async () => {
+      try {
+          const res = await FetchUsers()
+          setUsers(res);
+      } catch (error) {
+          console.log(error.reponse.data);
+      }
   };
 
-  const Search = (query) => {
-    axios
-      .post(`/api/users/search?key=${query}`)
-      .then((res) => {
-        setUsers(res.data);
-      })
-      .catch((err) => {
-        console.log(err.reponse.data);
-      });
+  const search = async (query) => {
+      try {
+          const res = await Search(query);
+          setUsers(res);
+      } catch (error) {
+          console.log(error.reponse.data);
+      }
   };
 
-  const Delete = (id) => {
-    axios
-      .delete(`/api/users/${id}`)
-      .then((res) => {
+  const deletee = async (id) => {
+    try {
+        const res = await Delete(id);
         setUsers(users.filter((u) => u._id != id));
         toast({
-          title: 'User Deleted',
-          status: 'success',
-          duration: 4000,
-          isClosable: true,
+            title: 'User Deleted',
+            status: 'success',
+            duration: 4000,
+            isClosable: true,
         });
-      })
-      .catch((err) => {
-        console.log(err.reponse.data);
-      });
+    } catch(error) {
+        console.log(error.reponse.data);
+    }
   };
 
-  const Add = (form, setForm) => {
-    axios
-      .post('/api/users', form)
-      .then((res) => {
-        setUsers([...users, res.data]);
+  const add = async (form, setForm) => {
+    try {
+        const res = await Add(form, setForm);
+        console.log(res);
+        setUsers([...users, res]);
         toast({
-          title: 'User Added',
-          status: 'success',
-          duration: 4000,
-          isClosable: true,
+            title: 'User Added',
+            status: 'success',
+            duration: 4000,
+            isClosable: true,
         });
         setErrors({});
         setForm({});
         onClose();
-      })
-      .catch((err) => {
-        setErrors(err.response.data.error);
-      });
+    } catch(error) {
+        setErrors(error.response.data.error);
+    }
+
   };
 
-  const FindOne = async (id) => {
-    await axios
-      .get(`/api/users/${id}`)
-      .then((res) => {
-        setUser(res.data);
-      })
-      .catch((err) => {
-        setErrors(err.response.data.error);
-      });
+  const findOne = async (id) => {
+    try {
+        const res = await FindOne(id);
+        setUser(res);
+    } catch (error) {
+        setErrors(error.response.data.error);
+    }
+
   };
 
-  const Update = (form, setForm, id) => {
-    axios
-      .put(`/api/users/${id}`, form)
-      .then((res) => {
+  const update = async (form, setForm, id) => {
+    try {
+        const res = await Update(form, setForm, id)
         toast({
-          title: 'User Updated',
-          status: 'success',
-          duration: 4000,
-          isClosable: true,
+            title: 'User Updated',
+            status: 'success',
+            duration: 4000,
+            isClosable: true,
         });
         setErrors({});
         setForm({});
         onClose();
-        FetchUsers();
-      })
-      .catch((err) => {
-        setErrors(err.response.data.error);
-      });
+        fetchUsers();
+    } catch (error) {
+        setErrors(error.response.data.error);
+    }
   };
   return (
     <GlobalContext.Provider
       value={{
-        FetchUsers,
-        Search,
-        Delete,
-        Add,
-        FindOne,
-        Update,
+        fetchUsers,
+        search,
+        deletee,
+        add,
+        findOne,
+        update,
         users,
         onOpen,
         isOpen,

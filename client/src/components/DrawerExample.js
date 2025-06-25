@@ -15,7 +15,7 @@ import { GlobalContext } from '../context/GlobalWrapper';
 import InputsGroup from './InputsGroup';
 
 export default function DrawerExample() {
-  const { onOpen, isOpen, onClose, Add, errors, setErrors, user, Update } =
+  const { onOpen, isOpen, onClose, add, errors, setErrors, user, update } =
     useContext(GlobalContext);
   const [form, setForm] = useState({});
   const onChangeHandler = (e) => {
@@ -26,11 +26,11 @@ export default function DrawerExample() {
   };
 
   const onAdd = () => {
-    Add(form, setForm);
+    add(form, setForm);
   };
 
   const onUpdate = () => {
-    Update(form, setForm, form._id);
+    update(form, setForm, form._id);
   };
 
   useEffect(() => {

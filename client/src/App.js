@@ -20,14 +20,14 @@ import Row from './components/Row';
 import DrawerExample from './components/DrawerExample';
 
 function App() {
-  const { FetchUsers, Search, users, onOpen, isOpen, onClose } =
+  const { fetchUsers, search, users, onOpen, isOpen, onClose } =
     useContext(GlobalContext);
   const [query, setQuery] = useState('');
   useEffect(() => {
-    FetchUsers();
+    fetchUsers();
   }, []);
   const SearchHandler = () => {
-    Search(query);
+    search(query);
   };
   const onchangeHandler = (e) => {
     setQuery(e.target.value);

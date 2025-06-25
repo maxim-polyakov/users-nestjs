@@ -14,15 +14,6 @@ const GetBaseUrl = () => {
 };
 
 export const $host = axios.create();
-export const $authHost = axios.create();
 
-$authHost.defaults.baseURL = GetBaseUrl();
+
 $host.defaults.baseURL = GetBaseUrl();
-
-const authInterceptor = config => {
-    config.headers.authorization = `Bearer ${localStorage.getItem('token')}`;
-    return config;
-};
-
-$authHost.interceptors.request.use(authInterceptor);
-$host.interceptors.request.use(authInterceptor);
